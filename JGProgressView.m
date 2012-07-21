@@ -161,7 +161,7 @@
         
         [theImageView startAnimating];
         
-        [theImageView sizeToFit];
+        [theImageView setFrame:self.bounds];
     }
     else {
         [theImageView stopAnimating];
@@ -209,7 +209,7 @@
     
     [theImageView startAnimating];
     
-    [theImageView sizeToFit];
+    [theImageView setFrame:self.bounds];
 }
 
 - (void)setFrame:(CGRect)frame {
