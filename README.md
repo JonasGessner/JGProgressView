@@ -7,20 +7,17 @@ JGProgressView
 Usage
 =====
 
-Set it up:
-==
-
-1. Add the following files to your project: JGProgressView.h, JGProgressView.m, Indeterminate@2x.png, Indeterminate.png
+1. Add the following files to your project: JGProgressView.h, JGProgressView.m, Indeterminate@@2x.png, Indeterminate.png
 
 2. #import "JGProgressView.h"
 
-It is used like a UIProgressView (its a UIProgressView subclass so its obvious)
+#####It is used like a UIProgressView (its a UIProgressView subclass so its obvious)
 
-To make the Progress View indeterminate simply set the 'isIndeterminate' property to YES
+#####To make the Progress View indeterminate simply set the 'isIndeterminate' property to YES
 
-You can adjust the animation speed by setting the Progress Bar's animationSpeed property. The value is limited from 0.0 to 1.0.
+#####You can adjust the animation speed by setting the Progress Bar's animationSpeed property. The value is limited from 0.0 to 1.0.
 
-Short demonstration:
+####Short demonstration:
 
 	JGProgressView *p = [[JGProgressView alloc] initWithFrame:CGRectMake(100, 100, 200, 9)];
 	p.progress = 0.5;
@@ -28,7 +25,7 @@ Short demonstration:
 	p.isIndeterminate = YES;
 
 
-JGProgressView is made for ARC projects and will leak memory in MRC (MRR) projects.
+#####JGProgressView is made for ARC projects and will leak memory in MRC (MRR) projects.
 
 License
 =====
