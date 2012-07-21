@@ -7,7 +7,7 @@ JGProgressView
 
 Setup
 =====
-1. Add the `JGprogressView` older to your Project
+1. Add the `JGprogressView` folder to your Project
 
 2. Add the **QuartzCore** framework to your project.
 
@@ -20,7 +20,7 @@ It is used like a UIProgressView (its a UIProgressView subclass so its obvious)
 
 To make the Progress View indeterminate simply set the 'isIndeterminate' property to YES
 
-You can adjust the animation speed by setting the Progress Bar's animationSpeed property. The value is limited from 0.0 to 1.0.
+You can adjust the animation speed by changing the Progress Bar's animationSpeed property (default 0.5). The value is limited from 0.0 to 1.0.
 
 ###Short demonstration:
 
