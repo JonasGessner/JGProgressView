@@ -7,9 +7,11 @@ JGProgressView
 Usage
 =====
 
-1. Add the following files to your project: JGProgressView.h, JGProgressView.m, Indeterminate@@2x.png, Indeterminate.png
+1. Add the 	JGprogressView	folder to your Project
 
-2. #import "JGProgressView.h"
+2. Add the QuartzCore framework to your project.
+
+2. 	#import "JGProgressView.h"
 
 #####It is used like a UIProgressView (its a UIProgressView subclass so its obvious)
 
