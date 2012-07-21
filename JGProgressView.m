@@ -94,6 +94,19 @@
     return self;
 }
 
+- (void)setAnimationSpeed:(float)_animationSpeed {
+    if (_animationSpeed > 1.0f) {
+        animationSpeed = 1.0f;
+    }
+    else if (_animationSpeed < 0.0f) {
+        animationSpeed = 0.0f;
+    }
+    else {
+        animationSpeed = _animationSpeed;
+    }
+    [theImageView setAnimationDuration:self.animationSpeed];
+}
+
 - (void)setIsIndeterminate:(BOOL)_isIndeterminate {
     if (isIndeterminate == _isIndeterminate) {
         return;
@@ -110,7 +123,7 @@
         UIImage *single = [UIImage imageNamed:@"Indeterminate.png"];
         masterImage = [single copy];
         
-        while (masterImage.size.width-single.size.width < self.frame.size.width) {
+        while (masterImage.size.width-single.size.width < self.frame.size.width+single.size.width) {
             masterImage = [masterImage attachImage:single];
         }
         
@@ -163,7 +176,7 @@
 - (void)reloopForFrameChange {
     UIImage *single = [UIImage imageNamed:@"Indeterminate.png"];
     if (masterImage.size.width-single.size.width < self.frame.size.width) {
-        while (masterImage.size.width-single.size.width < self.frame.size.width) {
+        while (masterImage.size.width-single.size.width < self.frame.size.width+single.size.width) {
             masterImage = [masterImage attachImage:single];
         }
     }
@@ -200,12 +213,12 @@
 }
 
 - (void)setFrame:(CGRect)frame {
-    if (!CGRectEqualToRect(frame, self.frame)) {
-        [super setFrame:frame];
+    if (!CGSizeEqualToSize(self.frame.size, frame.size)) {
         if (self.isIndeterminate) {
             [self reloopForFrameChange];
         }
     }
+    [super setFrame:frame];
 }
 
 @end
