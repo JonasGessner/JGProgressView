@@ -4,10 +4,9 @@ JGProgressView
 ![sample image](http://j-gessner.de/general/images/JGProgressView.png)
 
 
-
 Setup
 =====
-1. Add the `JGprogressView` folder to your Project
+1. Add the `JGProgressView` folder to your Project
 
 2. Add the **QuartzCore** framework to your project.
 
@@ -16,7 +15,7 @@ Setup
 Usage
 =====
 
-It is used like a UIProgressView (its a UIProgressView subclass so its obvious)
+It is used like a UIProgressView (obviously; its a UIProgressView subclass)
 
 To make the Progress View indeterminate simply set the 'isIndeterminate' property to YES
 
@@ -24,10 +23,10 @@ You can adjust the animation speed by changing the Progress Bar's animationSpeed
 
 ###Short demonstration:
 
-	JGProgressView *p = [[JGProgressView alloc] initWithFrame:CGRectMake(100, 100, 200, 9)];
-	p.progress = 0.5;
-	[self.view addSubview:p];
-	p.isIndeterminate = YES;
+	JGProgressView *progressView = [[JGProgressView alloc] initWithFrame:CGRectMake(100, 100, 200, 9)];
+	progressView.progress = 0.5;
+	[self.view addSubview:progressView];
+	progressView.isIndeterminate = YES;
 
 
 __*Important note if your project doesn't use ARC*: you must add the `-fobjc-arc` compiler flag to `JGProgressView.m` in Target Settings > Build Phases > Compile Sources.__
