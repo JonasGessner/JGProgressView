@@ -103,6 +103,21 @@
     }
 }
 
+- (void)setAnimationSpeed:(NSTimeInterval)_animationSpeed {
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        animationSpeed = _animationSpeed*[[UIScreen mainScreen] scale];
+    }
+    else {
+        animationSpeed = _animationSpeed;
+    }
+    
+    if (_animationSpeed >= 0.0f) {
+        animationSpeed = _animationSpeed;
+    }
+    if (self.isIndeterminate)
+        [theImageView setAnimationDuration:self.animationSpeed];
+    
+}
 - (void)setProgressViewStyle:(UIProgressViewStyle)progressViewStyle {
     if (progressViewStyle == self.progressViewStyle) {
         return;
@@ -112,14 +127,6 @@
     
     if (self.isIndeterminate)
         [self reloopForInterfaceChange];
-}
-
-- (void)setAnimationSpeed:(NSTimeInterval)_animationSpeed {
-    if (_animationSpeed >= 0.0f) {
-        animationSpeed = _animationSpeed;
-    }
-    if (self.isIndeterminate)
-        [theImageView setAnimationDuration:self.animationSpeed];
 }
 
 - (float)progress {
@@ -205,14 +212,14 @@
     
     CGFloat pixels = single.size.width*single.scale;
     
-    for (int i = 0; i <= pixels+2*single.scale; i++) {
+    for (int i = 0; i < pixels; i++) {
         UIGraphicsBeginImageContextWithOptions(CGSizeMake(self.frame.size.width, masterImage.size.height), NO, single.scale);
         CGContextRef context = UIGraphicsGetCurrentContext();
         
         CGContextTranslateCTM(context, 0, masterImage.size.height);
         CGContextScaleCTM(context, 1.0, -1.0);
         
-        CGContextDrawImage(context, CGRectMake(-i, 0, masterImage.size.width+single.size.width, masterImage.size.height), masterImage.CGImage);
+        CGContextDrawImage(context, CGRectMake(-i, 0, masterImage.size.width, masterImage.size.height), masterImage.CGImage);
         
         UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
         
