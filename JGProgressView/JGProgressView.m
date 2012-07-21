@@ -49,11 +49,7 @@
     
     CGContextDrawImage(context, CGRectMake(self.size.width, 0, image.size.width, self.size.height), image.CGImage);
     
-    CGImageRef finalImage = CGBitmapContextCreateImage(context);
-    
-    UIImage *result = [UIImage imageWithCGImage:finalImage scale:self.scale orientation:UIImageOrientationUp];
-    
-    CGImageRelease(finalImage);
+    UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
     
     UIGraphicsEndImageContext();
     
@@ -67,9 +63,13 @@
     UIImageView *theImageView;
     
     UIImage *masterImage;
+    
+    CGFloat cachedProgress;
 }
 
-- (void)reloopForFrameChange;
+- (UIImage *)imageForCurrentStyle;
+- (void)reloopForInterfaceChange;
+- (void)layoutImageView;
 
 @end
 
@@ -94,17 +94,62 @@
     return self;
 }
 
-- (void)setAnimationSpeed:(float)_animationSpeed {
-    if (_animationSpeed > 1.0f) {
-        animationSpeed = 1.0f;
-    }
-    else if (_animationSpeed < 0.0f) {
-        animationSpeed = 0.0f;
+- (UIImage *)imageForCurrentStyle {
+    if (self.progressViewStyle == UIProgressViewStyleDefault) {
+        return [UIImage imageNamed:@"Indeterminate.png"];
     }
     else {
+        return [UIImage imageNamed:@"IndeterminateBar.png"];
+    }
+}
+
+- (void)setProgressViewStyle:(UIProgressViewStyle)progressViewStyle {
+    if (progressViewStyle == self.progressViewStyle) {
+        return;
+    }
+    
+    [super setProgressViewStyle:progressViewStyle];
+    
+    if (self.isIndeterminate)
+        [self reloopForInterfaceChange];
+}
+
+- (void)setAnimationSpeed:(NSTimeInterval)_animationSpeed {
+    if (_animationSpeed >= 0.0f) {
         animationSpeed = _animationSpeed;
     }
-    [theImageView setAnimationDuration:self.animationSpeed];
+    if (self.isIndeterminate)
+        [theImageView setAnimationDuration:self.animationSpeed];
+}
+
+- (float)progress {
+    if (self.isIndeterminate) {
+        return cachedProgress;
+    }
+    else {
+        return [super progress];
+    }
+}
+
+- (void)setProgress:(float)progress {
+    if (self.isIndeterminate) {
+        cachedProgress = progress;
+    }
+    else {
+        [super setProgress:progress];
+    }
+}
+
+- (void)layoutImageView {
+    [theImageView sizeToFit];
+    
+    CGFloat border = ([[self.subviews objectAtIndex:0] frame].size.height-theImageView.frame.size.height);
+    
+    theImageView.center = CGPointMake(theImageView.center.x, CGRectGetMidY(self.bounds)-border/2);
+    
+    theImageView.frame = CGRectMake(border, theImageView.frame.origin.y, theImageView.frame.size.width-border*2, theImageView.frame.size.height);
+    
+    theImageView.layer.cornerRadius = theImageView.frame.size.height/2;
 }
 
 - (void)setIsIndeterminate:(BOOL)_isIndeterminate {
@@ -112,90 +157,62 @@
         return;
     }
     
+    if (_isIndeterminate) {
+        cachedProgress = self.progress;
+        self.progress = 0;
+    }
+    
     isIndeterminate = _isIndeterminate;
     
     if (isIndeterminate) {
-        self.layer.cornerRadius = self.frame.size.height/2;
-        self.layer.masksToBounds = YES;
-        self.layer.borderColor = [UIColor blackColor].CGColor;
-        self.layer.borderWidth = 0.5f;
-        
-        UIImage *single = [UIImage imageNamed:@"Indeterminate.png"];
-        masterImage = [single copy];
-        
-        while (masterImage.size.width-single.size.width < self.frame.size.width+single.size.width) {
-            masterImage = [masterImage attachImage:single];
-        }
-        
-        if (!animationImages) {
-            animationImages = [[NSMutableArray alloc] init];
-        }
-        else {
-            [animationImages removeAllObjects];
-        }
-        
-        for (int i = 0; i < single.size.width; i++) {
-            UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, 0.0);
-            CGContextRef context = UIGraphicsGetCurrentContext();
-            
-            CGContextTranslateCTM(context, 0, masterImage.size.height);
-            CGContextScaleCTM(context, 1.0, -1.0);
-            
-            CGContextDrawImage(context, CGRectMake(-i, 0, masterImage.size.width-single.size.width, masterImage.size.height), masterImage.CGImage);
-            
-            UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
-            
-            UIGraphicsEndImageContext();
-            
-            [animationImages addObject:result];
-        }
-        
-        if (!theImageView) {
-            theImageView = [[UIImageView alloc] init];
-        }
-        
-        [self addSubview:theImageView];
-        
-        theImageView.animationImages = animationImages;
-        theImageView.animationDuration = self.animationSpeed;
-        
-        [theImageView startAnimating];
-        
-        [theImageView setFrame:self.bounds];
+        [self reloopForInterfaceChange];
     }
     else {
+        self.progress = cachedProgress;
         [theImageView stopAnimating];
         [theImageView removeFromSuperview];
-        
-        self.layer.cornerRadius = 0;
-        self.layer.masksToBounds = NO;
-        self.layer.borderWidth = 0.0f;
     }
 }
 
-- (void)reloopForFrameChange {
-    UIImage *single = [UIImage imageNamed:@"Indeterminate.png"];
-    if (masterImage.size.width-single.size.width < self.frame.size.width) {
+- (void)reloopForInterfaceChange {
+    UIImage *single = [self imageForCurrentStyle];
+    
+    if ((int)self.progressViewStyle != theImageView.tag || !masterImage) {
+        masterImage = [single copy];
         while (masterImage.size.width-single.size.width < self.frame.size.width+single.size.width) {
             masterImage = [masterImage attachImage:single];
         }
     }
     else {
-        while (masterImage.size.width-single.size.width > self.frame.size.width+single.size.width) {
-            masterImage = [masterImage cropByX:single.size.width];
+        if (masterImage.size.width-single.size.width < self.frame.size.width) {
+            while (masterImage.size.width-single.size.width < self.frame.size.width+single.size.width) {
+                masterImage = [masterImage attachImage:single];
+            }
+        }
+        else {
+            while (masterImage.size.width-single.size.width > self.frame.size.width+single.size.width) {
+                masterImage = [masterImage cropByX:single.size.width];
+            }
         }
     }
     
-    [animationImages removeAllObjects];
+    if (!animationImages) {
+        animationImages = [[NSMutableArray alloc] init];
+    }
+    else {
+        [animationImages removeAllObjects];
+    }
     
-    for (int i = 0; i < single.size.width; i++) {
-        UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, 0.0);
+    CGFloat pixels = single.size.width*single.scale;
+    
+    for (int i = 0; i <= pixels+2*single.scale; i++) {
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(self.frame.size.width, masterImage.size.height), NO, single.scale);
         CGContextRef context = UIGraphicsGetCurrentContext();
         
         CGContextTranslateCTM(context, 0, masterImage.size.height);
         CGContextScaleCTM(context, 1.0, -1.0);
         
-        CGContextDrawImage(context, CGRectMake(-i, 0, masterImage.size.width, masterImage.size.height), masterImage.CGImage);
+        CGContextDrawImage(context, CGRectMake(-i, 0, masterImage.size.width+single.size.width, masterImage.size.height), masterImage.CGImage);
         
         UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
         
@@ -204,21 +221,31 @@
         [animationImages addObject:result];
     }
     
+    if (!theImageView) {
+        theImageView = [[UIImageView alloc] init];
+        theImageView.layer.masksToBounds = YES;
+    }
+    
+    theImageView.tag = (int)self.progressViewStyle;
+    
+    [self addSubview:theImageView];
+    
     theImageView.animationImages = animationImages;
     theImageView.animationDuration = self.animationSpeed;
     
-    [theImageView startAnimating];
+    [self layoutImageView];
     
-    [theImageView setFrame:self.bounds];
+    [theImageView startAnimating];
 }
 
 - (void)setFrame:(CGRect)frame {
-    if (!CGSizeEqualToSize(self.frame.size, frame.size)) {
+    CGSize oldSize = self.frame.size;
+    [super setFrame:frame];
+    if (!CGSizeEqualToSize(oldSize, frame.size)) {
         if (self.isIndeterminate) {
-            [self reloopForFrameChange];
+            [self reloopForInterfaceChange];
         }
     }
-    [super setFrame:frame];
 }
 
 @end

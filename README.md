@@ -19,12 +19,11 @@ It is used like a UIProgressView (obviously; its a UIProgressView subclass)
 
 To make the Progress View indeterminate simply set the 'isIndeterminate' property to YES
 
-You can adjust the animation speed by changing the Progress Bar's animationSpeed property (default 0.5). The value is limited from 0.0 to 1.0.
+You can adjust the animation speed by changing the Progress Bar's animationSpeed property (default 0.5). The value has to be positive or it will be ignored
 
 ###Short demonstration:
 
-	JGProgressView *progressView = [[JGProgressView alloc] initWithFrame:CGRectMake(100, 100, 200, 9)];
-	progressView.progress = 0.5;
+	JGProgressView *progressView = [[JGProgressView alloc] initWithFrame:CGRectMake(100, 100, 200, 11)];
 	[self.view addSubview:progressView];
 	progressView.isIndeterminate = YES;
 
