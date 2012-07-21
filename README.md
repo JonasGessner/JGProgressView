@@ -1,5 +1,5 @@
 JGProgressView
-=======
+-------------------
 
 ![sample image](http://j-gessner.de/general/images/JGProgressView.png)
 
@@ -7,11 +7,11 @@ JGProgressView
 
 Setup
 =====
-1. Add the @JGprogressView@ older to your Project
+1. Add the `JGprogressView` older to your Project
 
-2. Add the ####QuartzCore#### framework to your project.
+2. Add the **QuartzCore** framework to your project.
 
-2. @#import "JGProgressView.h"@
+2. `#import "JGProgressView.h"`
 
 Usage
 =====
@@ -30,7 +30,7 @@ You can adjust the animation speed by setting the Progress Bar's animationSpeed 
 	p.isIndeterminate = YES;
 
 
-__*Important note if your project doesn't use ARC*: you must add the @-fobjc-arc@ compiler flag to @JGProgressView.m@ in Target Settings > Build Phases > Compile Sources.__
+__*Important note if your project doesn't use ARC*: you must add the `-fobjc-arc` compiler flag to `JGProgressView.m` in Target Settings > Build Phases > Compile Sources.__
 
 License
 =====
