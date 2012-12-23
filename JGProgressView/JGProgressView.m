@@ -118,6 +118,7 @@
         [theImageView setAnimationDuration:self.animationSpeed];
     
 }
+
 - (void)setProgressViewStyle:(UIProgressViewStyle)progressViewStyle {
     if (progressViewStyle == self.progressViewStyle) {
         return;
@@ -138,6 +139,15 @@
     }
 }
 
+- (void)setProgress:(float)progress animated:(BOOL)animated {
+    if (self.isIndeterminate) {
+        cachedProgress = progress;
+    }
+    else {
+        [super setProgress:progress animated:animated];
+    }
+}
+
 - (void)setProgress:(float)progress {
     if (self.isIndeterminate) {
         cachedProgress = progress;
@@ -150,7 +160,7 @@
 - (void)layoutImageView {
     [theImageView sizeToFit];
     
-    CGFloat border = ([[self.subviews objectAtIndex:0] frame].size.height-theImageView.frame.size.height);
+    CGFloat border = ([(self.subviews)[0] frame].size.height-theImageView.frame.size.height);
     
     theImageView.center = CGPointMake(theImageView.center.x, CGRectGetMidY(self.bounds)-border/2);
     
@@ -161,6 +171,13 @@
 
 - (void)setIsIndeterminate:(BOOL)_isIndeterminate {
     if (isIndeterminate == _isIndeterminate) {
+        if (_isIndeterminate) {
+            [self reloopForInterfaceChange];
+        }
+        else {
+            [theImageView removeFromSuperview];
+            theImageView = nil;
+        }
         return;
     }
     
@@ -245,8 +262,14 @@
     [theImageView startAnimating];
 }
 
+- (NSArray *)subviews {
+    NSMutableArray *mutable = [[super subviews] mutableCopy];
+    [mutable removeObjectIdenticalTo:theImageView];
+    return [[NSArray alloc] initWithArray:mutable];
+}
+
 - (void)setFrame:(CGRect)frame {
-    CGSize oldSize = self.frame.size;
+    CGSize oldSize = CGSizeMake(self.frame.size.width, self.frame.size.height);
     [super setFrame:frame];
     if (!CGSizeEqualToSize(oldSize, frame.size)) {
         if (self.isIndeterminate) {
