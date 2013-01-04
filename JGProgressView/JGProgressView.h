@@ -9,7 +9,7 @@
 
 @interface JGProgressView : UIProgressView
 
-@property (nonatomic, unsafe_unretained) BOOL isIndeterminate; //default NO
-@property (nonatomic, unsafe_unretained) NSTimeInterval animationSpeed; //default 0.5, negative values are not allowed and will be ignored
+@property (nonatomic, assign) BOOL isIndeterminate; //default NO
+@property (nonatomic, assign) NSTimeInterval animationSpeed; //default 0.5, negative values are not allowed and will be ignored
 
 @end
