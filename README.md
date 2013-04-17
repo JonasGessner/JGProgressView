@@ -12,8 +12,8 @@ Setup
 
 2. `#import "JGProgressView.h"`
 
-Usage
-=====
+Basic Usage
+===========
 
 It is used like a normal UIProgressView with the addition of a few properties:
 
@@ -39,11 +39,16 @@ It is used like a normal UIProgressView with the addition of a few properties:
 - DO NOT set this property to YES on more than 1 progress views if their animation related-properties (bounds, progressViewStyle, animateToRight) are different for each view.
 
 
-**Additional functionality**
+Additional Functionality
+===========
 
 `beginUpdates`
+
 `endUpdates`
+
 when changing multiple properties that affect the animation related-properties (frame, progressViewStyle, animateToRight) in one code block, use beginUpdates before applying these changes and endUpdates after applying the changes to increase performance
+
+
 
 
 ###Short demonstration:
