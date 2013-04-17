@@ -11,7 +11,7 @@ Setup
 
 2. Add the **QuartzCore** framework to your project
 
-3. `#import "JGProgressView.h"`
+3. Add `#import "JGProgressView.h"` to the files where you are using JGProgressView
 
 Basic Usage
 ===========
