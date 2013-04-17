@@ -7,16 +7,16 @@ JGProgressView
 
 Setup
 =====
-1. Add the `JGProgressView` folder to your Project
+1. Add the `JGProgressView` folder to your Xcode Project
 
-2. Add the **QuartzCore** framework to your project.
+2. Add the **QuartzCore** framework to your project
 
-2. `#import "JGProgressView.h"`
+3. `#import "JGProgressView.h"`
 
 Basic Usage
 ===========
 
-It is used like a normal UIProgressView with the addition of a few properties:
+JGProgressView is used like a normal UIProgressView with the addition of a few properties:
 
 
 **BOOL indeterminate**
