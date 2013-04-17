@@ -19,26 +19,25 @@ It is used like a normal UIProgressView with the addition of a few properties:
 
 
 **BOOL indeterminate**
-Property for the indeterminate setting, default is NO, set to YES to start the indeterminate animation
+-Property for the indeterminate setting, default is NO, set to YES to start the indeterminate animation
 
 
 **NSTimeInterval animationSpeed**
-Adjust the speed of the animation. The higher the value is, the slower the animation becomes. Default value is 0.5, negative values will be ignored
+-Adjust the speed of the animation. The higher the value is, the slower the animation becomes. Default value is 0.5, negative values will be ignored
 
 
 **BOOL animateToRight**
-Default value is NO, when set to YES the animation switches over to animating to the right instead of left
+-Default value is NO, when set to YES the animation switches over to animating to the right instead of left
 
 
 **BOOL useSharedImages**
-Set this property to YES when using more than 1 progress views with identical animation related-properties (bounds, progressViewStyle, animateToRight) for improved performance (ex. in several UITableViewCells)
-
-DO NOT set this property to YES on more than 1 progress views if their animation related-properties (bounds, progressViewStyle, animateToRight) are different for each view.
+-Set this property to YES when using more than 1 progress views with identical animation related-properties (bounds, progressViewStyle, animateToRight) for improved performance (ex. in several UITableViewCells)
+-DO NOT set this property to YES on more than 1 progress views if their animation related-properties (bounds, progressViewStyle, animateToRight) are different for each view.
 
 
 **Additional functionality**
-- (void)beginUpdates;
-- (void)endUpdates;
+`beginUpdates`
+`endUpdates`
 when changing multiple properties that affect the animation related-properties (frame, progressViewStyle, animateToRight) in one code block, use beginUpdates before applying these changes and endUpdates after applying the changes to increase performance
 
 
