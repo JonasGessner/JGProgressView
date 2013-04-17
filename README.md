@@ -1,8 +1,9 @@
 JGProgressView
 -------------------
 
+<p align="center">
 ![sample image](http://j-gessner.de/general/images/JGProgressView.png)
-
+</p>
 
 Setup
 =====
