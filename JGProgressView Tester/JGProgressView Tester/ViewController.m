@@ -13,13 +13,6 @@
 
 @end
 
-@interface PTImage : UIImage
-
-@end
-@implementation PTImage
-
-@end
-
 @implementation ViewController
 
 
@@ -28,7 +21,7 @@
     
     NSUInteger ye = arc4random_uniform(2);
     BOOL ye2 = arc4random_uniform(2);
-    NSUInteger width = 200;//arc4random_uniform(100)+100;
+    NSUInteger width = arc4random_uniform(120)+100;
     
     for (JGProgressView *prog in progss) {
         [prog beginUpdates];
@@ -46,7 +39,7 @@
     
     NSUInteger ye = arc4random_uniform(2);
     BOOL ye2 = arc4random_uniform(2);
-    NSUInteger width = 200;//arc4random_uniform(100)+100;
+    NSUInteger width = arc4random_uniform(120)+100;
     
     [prog beginUpdates];
     [prog setProgressViewStyle:ye];
@@ -69,7 +62,7 @@
     for (i = 0; i <= count; i++) {
         JGProgressView *p = [[JGProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
         [p setUseSharedImages:YES];
-        p.frame = CGRectMake(50, 10+50*i, 230, p.frame.size.height);
+        p.frame = CGRectMake(50, 10+50*i, 220, p.frame.size.height);
         p.center = CGPointMake(CGRectGetMidX(self.view.bounds), p.center.y);
         
         [self.view addSubview:p];
@@ -83,7 +76,7 @@
     
     //Set up an individual progress view which doesn't use the shared animation images
     JGProgressView *p = [[JGProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-    p.frame = CGRectMake(50, 10+50*i, 230, p.frame.size.height);
+    p.frame = CGRectMake(50, 10+50*i, 220, p.frame.size.height);
     p.center = CGPointMake(CGRectGetMidX(self.view.bounds), p.center.y);
     
     [self.view addSubview:p];
