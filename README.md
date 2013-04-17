@@ -39,8 +39,7 @@ It is used like a normal UIProgressView with the addition of a few properties:
 - DO NOT set this property to YES on more than 1 progress views if their animation related-properties (bounds, progressViewStyle, animateToRight) are different for each view.
 
 
-Additional Functionality
-===========
+###Additional Functionality
 
 `beginUpdates`
 
