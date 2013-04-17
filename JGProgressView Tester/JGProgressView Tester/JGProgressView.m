@@ -6,7 +6,6 @@
 //
 
 #import "JGProgressView.h"
-#import "Constants.h"
 #import <QuartzCore/QuartzCore.h>
 
 //Shared objects
@@ -196,10 +195,10 @@ static BOOL _right;
 
 - (UIImage *)imageForCurrentStyle {
     if (self.progressViewStyle == UIProgressViewStyleDefault) {
-        return [PTImage imageNamed:@"Indeterminate.png"];
+        return [UIImage imageNamed:@"Indeterminate.png"];
     }
     else {
-        return [PTImage imageNamed:@"IndeterminateBar.png"];
+        return [UIImage imageNamed:@"IndeterminateBar.png"];
     }
 }
 

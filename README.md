@@ -15,25 +15,52 @@ Setup
 Usage
 =====
 
-It is used like a UIProgressView (obviously; its a UIProgressView subclass)
+It is used like a normal UIProgressView with the addition of a few properties:
 
-To make the Progress View indeterminate simply set the 'isIndeterminate' property to YES
 
-You can adjust the animation speed by changing the Progress Bar's animationSpeed property (default 0.5). The value has to be positive or it will be ignored
+**BOOL indeterminate**
+Property for the indeterminate setting, default is NO, set to YES to start the indeterminate animation
+
+
+**NSTimeInterval animationSpeed**
+Adjust the speed of the animation. The higher the value is, the slower the animation becomes. Default value is 0.5, negative values will be ignored
+
+
+**BOOL animateToRight**
+Default value is NO, when set to YES the animation switches over to animating to the right instead of left
+
+
+**BOOL useSharedImages**
+Set this property to YES when using more than 1 progress views with identical animation related-properties (bounds, progressViewStyle, animateToRight) for improved performance (ex. in several UITableViewCells)
+
+DO NOT set this property to YES on more than 1 progress views if their animation related-properties (bounds, progressViewStyle, animateToRight) are different for each view.
+
+
+**Additional functionality**
+- (void)beginUpdates;
+- (void)endUpdates;
+when changing multiple properties that affect the animation related-properties (frame, progressViewStyle, animateToRight) in one code block, use beginUpdates before applying these changes and endUpdates after applying the changes to increase performance
+
 
 ###Short demonstration:
 
 	JGProgressView *progressView = [[JGProgressView alloc] initWithFrame:CGRectMake(100, 100, 200, 11)];
 	[self.view addSubview:progressView];
-	progressView.isIndeterminate = YES;
+	progressView.useSharedImages = NO;
+	progressView.animateToRight = YES;
+	progressView.animationSpeed = 1.5f;
+	progressView.indeterminate = YES;
 
 
 __*Important note if your project doesn't use ARC*: you must add the `-fobjc-arc` compiler flag to `JGProgressView.m` in Target Settings > Build Phases > Compile Sources.__
 
+
 License
 =====
 
-Copyright (c) 2012 Jonas Gessner
+ 
+
+Copyright (c) 2012-2013 Jonas Gessner
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
