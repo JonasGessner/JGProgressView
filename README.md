@@ -1,6 +1,6 @@
 JGProgressView
 -------------------
-
+By Jonas Gessner (@JonasGessner). Please let me know if you use JGProgressView in your app! :)
 <p align="center">
 <img src=http://j-gessner.de/general/images/JGProgressView.png>
 </p>
