@@ -67,10 +67,6 @@ __*Important note if your project doesn't use ARC*: you must add the `-fobjc-arc
 License
 =====
 
- 
-
-##License
-
 Copyright © 2012-2013 Jonas Gessner
 
 JGProgressView is available under the <a href="http://opensource.org/licenses/Python-2.0">Python 2.0 license</a>
