@@ -382,16 +382,27 @@ static BOOL _right;
     
     [self setCurrentStyle:self.progressViewStyle];
     
-    [host addSubview:theImageView];
+    if (theImageView.superview != host) {
+        [host addSubview:theImageView];
+    }
     
-    [self addSubview:host];
+    if (host.superview != self) {
+        [self addSubview:host];
+    }
     
-    theImageView.animationImages = imgs;
-    theImageView.animationDuration = self.animationSpeed;
+    if (![theImageView.animationImages isEqualToArray:imgs]) {
+        theImageView.animationImages = imgs;
+    }
+    
+    if (theImageView.animationDuration != self.animationSpeed) {
+        theImageView.animationDuration = self.animationSpeed;
+    }
     
     [self layoutImageView];
     
-    [theImageView startAnimating];
+    if (!theImageView.isAnimating) {
+        [theImageView startAnimating];
+    }
 }
 
 - (void)setClipsToBounds:(BOOL)clipsToBounds {
