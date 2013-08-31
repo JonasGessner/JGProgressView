@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DDACCDE117CB988400FCDDD3 /* Alternative.png in Resources */ = {isa = PBXBuildFile; fileRef = DDACCDDF17CB988400FCDDD3 /* Alternative.png */; };
+		DDACCDE217CB988400FCDDD3 /* Alternative@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDACCDE017CB988400FCDDD3 /* Alternative@2x.png */; };
 		DDD7D0AB171F19600009CBC9 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDD7D0AA171F19600009CBC9 /* Default-568h@2x.png */; };
 		DDD7D0BA171F19920009CBC9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD7D0AE171F19910009CBC9 /* AppDelegate.m */; };
 		DDD7D0BB171F19920009CBC9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DDD7D0AF171F19910009CBC9 /* InfoPlist.strings */; };
@@ -14,17 +16,22 @@
 		DDD7D0BD171F19920009CBC9 /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDD7D0B3171F19910009CBC9 /* ViewController_iPhone.xib */; };
 		DDD7D0BF171F19920009CBC9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD7D0B7171F19910009CBC9 /* main.m */; };
 		DDD7D0C0171F19920009CBC9 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD7D0B9171F19910009CBC9 /* ViewController.m */; };
-		DDD7D0C4171F1A160009CBC9 /* JGProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD7D0C3171F1A160009CBC9 /* JGProgressView.m */; };
 		DDD7D0C9171F1AB60009CBC9 /* Indeterminate.png in Resources */ = {isa = PBXBuildFile; fileRef = DDD7D0C5171F1AB60009CBC9 /* Indeterminate.png */; };
 		DDD7D0CA171F1AB60009CBC9 /* Indeterminate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDD7D0C6171F1AB60009CBC9 /* Indeterminate@2x.png */; };
 		DDD7D0CB171F1AB60009CBC9 /* IndeterminateBar.png in Resources */ = {isa = PBXBuildFile; fileRef = DDD7D0C7171F1AB60009CBC9 /* IndeterminateBar.png */; };
 		DDD7D0CC171F1AB60009CBC9 /* IndeterminateBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDD7D0C8171F1AB60009CBC9 /* IndeterminateBar@2x.png */; };
+		DDDA5C5917D296EC00367104 /* JGProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDA5C5817D296EC00367104 /* JGProgressView.m */; };
 		DDEDF84915B6F4F8004F4EB5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDEDF84815B6F4F8004F4EB5 /* UIKit.framework */; };
 		DDEDF84B15B6F4F8004F4EB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDEDF84A15B6F4F8004F4EB5 /* Foundation.framework */; };
 		DDEDF84D15B6F4F8004F4EB5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDEDF84C15B6F4F8004F4EB5 /* CoreGraphics.framework */; };
+		KIYDQKWBMRKIEYEVRWSLKUDQ /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = HYXIFWTDXJPPRRMDCEPMDTJH /* QuartzCore.framework */; };
+		KNPONLATPTEBRUFEBXNXFHCQ /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = THBDITSPYVFDWQYYBDCIDIXG /* libz.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DD7806BE17CEC17D00B73BBF /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		DDACCDDF17CB988400FCDDD3 /* Alternative.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Alternative.png; sourceTree = "<group>"; };
+		DDACCDE017CB988400FCDDD3 /* Alternative@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Alternative@2x.png"; sourceTree = "<group>"; };
 		DDD7D0AA171F19600009CBC9 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		DDD7D0AD171F19910009CBC9 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		DDD7D0AE171F19910009CBC9 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -36,16 +43,19 @@
 		DDD7D0B7171F19910009CBC9 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DDD7D0B8171F19910009CBC9 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		DDD7D0B9171F19910009CBC9 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		DDD7D0C2171F1A160009CBC9 /* JGProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JGProgressView.h; sourceTree = "<group>"; };
-		DDD7D0C3171F1A160009CBC9 /* JGProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JGProgressView.m; sourceTree = "<group>"; };
 		DDD7D0C5171F1AB60009CBC9 /* Indeterminate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Indeterminate.png; sourceTree = "<group>"; };
 		DDD7D0C6171F1AB60009CBC9 /* Indeterminate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Indeterminate@2x.png"; sourceTree = "<group>"; };
 		DDD7D0C7171F1AB60009CBC9 /* IndeterminateBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IndeterminateBar.png; sourceTree = "<group>"; };
 		DDD7D0C8171F1AB60009CBC9 /* IndeterminateBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IndeterminateBar@2x.png"; sourceTree = "<group>"; };
+		DDDA5C5717D296EC00367104 /* JGProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JGProgressView.h; path = ../../JGProgressView/JGProgressView.h; sourceTree = "<group>"; };
+		DDDA5C5817D296EC00367104 /* JGProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JGProgressView.m; path = ../../JGProgressView/JGProgressView.m; sourceTree = "<group>"; };
 		DDEDF84415B6F4F8004F4EB5 /* JGProgressViewTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JGProgressViewTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDEDF84815B6F4F8004F4EB5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DDEDF84A15B6F4F8004F4EB5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		DDEDF84C15B6F4F8004F4EB5 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		HYXIFWTDXJPPRRMDCEPMDTJH /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		QMNTBWVDMICWTEJGUAKXRYSM /* SparkInspector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SparkInspector.framework; path = "/Applications/Spark Inspector.app/Contents/Resources/Frameworks/SparkInspector.framework"; sourceTree = "<group>"; };
+		THBDITSPYVFDWQYYBDCIDIXG /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +66,8 @@
 				DDEDF84915B6F4F8004F4EB5 /* UIKit.framework in Frameworks */,
 				DDEDF84B15B6F4F8004F4EB5 /* Foundation.framework in Frameworks */,
 				DDEDF84D15B6F4F8004F4EB5 /* CoreGraphics.framework in Frameworks */,
+				KIYDQKWBMRKIEYEVRWSLKUDQ /* QuartzCore.framework in Frameworks */,
+				KNPONLATPTEBRUFEBXNXFHCQ /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,12 +77,14 @@
 		DDD7D0AC171F19910009CBC9 /* JGProgressView Tester */ = {
 			isa = PBXGroup;
 			children = (
+				DDDA5C5717D296EC00367104 /* JGProgressView.h */,
+				DDDA5C5817D296EC00367104 /* JGProgressView.m */,
 				DDD7D0AD171F19910009CBC9 /* AppDelegate.h */,
 				DDD7D0AE171F19910009CBC9 /* AppDelegate.m */,
 				DDD7D0B8171F19910009CBC9 /* ViewController.h */,
 				DDD7D0B9171F19910009CBC9 /* ViewController.m */,
-				DDD7D0C2171F1A160009CBC9 /* JGProgressView.h */,
-				DDD7D0C3171F1A160009CBC9 /* JGProgressView.m */,
+				DDACCDDF17CB988400FCDDD3 /* Alternative.png */,
+				DDACCDE017CB988400FCDDD3 /* Alternative@2x.png */,
 				DDD7D0C5171F1AB60009CBC9 /* Indeterminate.png */,
 				DDD7D0C6171F1AB60009CBC9 /* Indeterminate@2x.png */,
 				DDD7D0C7171F1AB60009CBC9 /* IndeterminateBar.png */,
@@ -114,9 +128,13 @@
 		DDEDF84715B6F4F8004F4EB5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DD7806BE17CEC17D00B73BBF /* GameKit.framework */,
 				DDEDF84815B6F4F8004F4EB5 /* UIKit.framework */,
 				DDEDF84A15B6F4F8004F4EB5 /* Foundation.framework */,
 				DDEDF84C15B6F4F8004F4EB5 /* CoreGraphics.framework */,
+				HYXIFWTDXJPPRRMDCEPMDTJH /* QuartzCore.framework */,
+				THBDITSPYVFDWQYYBDCIDIXG /* libz.dylib */,
+				QMNTBWVDMICWTEJGUAKXRYSM /* SparkInspector.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -147,7 +165,7 @@
 		DDEDF83B15B6F4F8004F4EB5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Jonas Gessner";
 			};
 			buildConfigurationList = DDEDF83E15B6F4F8004F4EB5 /* Build configuration list for PBXProject "JGProgressViewTester" */;
@@ -178,8 +196,10 @@
 				DDD7D0BD171F19920009CBC9 /* ViewController_iPhone.xib in Resources */,
 				DDD7D0C9171F1AB60009CBC9 /* Indeterminate.png in Resources */,
 				DDD7D0CA171F1AB60009CBC9 /* Indeterminate@2x.png in Resources */,
+				DDACCDE217CB988400FCDDD3 /* Alternative@2x.png in Resources */,
 				DDD7D0CB171F1AB60009CBC9 /* IndeterminateBar.png in Resources */,
 				DDD7D0CC171F1AB60009CBC9 /* IndeterminateBar@2x.png in Resources */,
+				DDACCDE117CB988400FCDDD3 /* Alternative.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,10 +210,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDDA5C5917D296EC00367104 /* JGProgressView.m in Sources */,
 				DDD7D0BA171F19920009CBC9 /* AppDelegate.m in Sources */,
 				DDD7D0BF171F19920009CBC9 /* main.m in Sources */,
 				DDD7D0C0171F19920009CBC9 /* ViewController.m in Sources */,
-				DDD7D0C4171F1A160009CBC9 /* JGProgressView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,6 +255,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "\"/Applications/Spark Inspector.app/Contents/Resources/Frameworks\"";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -247,6 +268,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-framework",
+					SparkInspector,
+				);
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -275,9 +302,16 @@
 		DDEDF86615B6F4F8004F4EB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"/Applications/Spark Inspector.app/Contents/Resources/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JGProgressView Tester/JGProgressViewTester-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/JGProgressView Tester/JGProgressViewTester-Info.plist";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-framework",
+					SparkInspector,
+				);
 				PRODUCT_NAME = JGProgressViewTester;
 				WRAPPER_EXTENSION = app;
 			};
@@ -286,6 +320,7 @@
 		DDEDF86715B6F4F8004F4EB5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JGProgressView Tester/JGProgressViewTester-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/JGProgressView Tester/JGProgressViewTester-Info.plist";

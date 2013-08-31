@@ -21,12 +21,16 @@
     
     NSUInteger ye = arc4random_uniform(2);
     BOOL ye2 = arc4random_uniform(2);
+    BOOL ye3 = arc4random_uniform(2);
     NSUInteger width = arc4random_uniform(120)+100;
     
     for (JGProgressView *prog in progss) {
         [prog beginUpdates];
         [prog setProgressViewStyle:ye];
         [prog setAnimateToRight:ye2];
+        
+        [prog setAnimationImage:(ye3 ? [UIImage imageNamed:@"Alternative.png"] : nil)];
+        
         CGRect fram = CGRectMake(prog.frame.origin.x, prog.frame.origin.y, width, prog.frame.size.height);
         [prog setFrame:fram];
         prog.center = CGPointMake(CGRectGetMidX(self.view.bounds), prog.center.y);
@@ -39,11 +43,15 @@
     
     NSUInteger ye = arc4random_uniform(2);
     BOOL ye2 = arc4random_uniform(2);
+    BOOL ye3 = arc4random_uniform(2);
     NSUInteger width = arc4random_uniform(120)+100;
     
     [prog beginUpdates];
     [prog setProgressViewStyle:ye];
     [prog setAnimateToRight:ye2];
+    
+    [prog setAnimationImage:(ye3 ? [UIImage imageNamed:@"Alternative.png"] : nil)];
+    
     CGRect fram = CGRectMake(prog.frame.origin.x, prog.frame.origin.y, width, prog.frame.size.height);
     [prog setFrame:fram];
     prog.center = CGPointMake(CGRectGetMidX(self.view.bounds), prog.center.y);
@@ -53,6 +61,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor whiteColor];
     
     //Set up 7 progress views that share their images and transform their properties andomly every 5 seconds (in random:)
     NSUInteger count = 7;
@@ -62,7 +71,7 @@
     for (i = 0; i <= count; i++) {
         JGProgressView *p = [[JGProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
         [p setUseSharedImages:YES];
-        p.frame = CGRectMake(50, 10+50*i, 220, p.frame.size.height);
+        p.frame = CGRectMake(50.0f, 10.0f+50.0f*i, 220.0f, p.frame.size.height);
         p.center = CGPointMake(CGRectGetMidX(self.view.bounds), p.center.y);
         
         [self.view addSubview:p];
@@ -72,20 +81,22 @@
         [progressViews addObject:p];
     }
     
-    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(random:) userInfo:@{@"OBJ" : progressViews} repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(random:) userInfo:@{@"OBJ" : progressViews} repeats:YES];
     
     //Set up an individual progress view which doesn't use the shared animation images
     JGProgressView *p = [[JGProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-    p.frame = CGRectMake(50, 10+50*i, 220, p.frame.size.height);
-    p.center = CGPointMake(CGRectGetMidX(self.view.bounds), p.center.y);
     
-    [self.view addSubview:p];
-    p.animationSpeed = 1.5;
+    
+    [p setAnimationImage:[UIImage imageNamed:@"Alternative.png"]];
+    
+    p.animationSpeed = 1.6;
     [p setIndeterminate:YES];
     
-    [progressViews addObject:p];
+    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(random2:) userInfo:@{@"OBJ" : p} repeats:YES];
     
-    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(random2:) userInfo:@{@"OBJ" : p} repeats:YES];
+    p.frame = CGRectMake(50.0f, 10.0f+50.0f*(i+1), 220.0f, p.frame.size.height);
+    
+    [self.view addSubview:p];
 }
 
 - (void)didReceiveMemoryWarning
