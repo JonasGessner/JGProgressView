@@ -60,7 +60,7 @@ If `useSharedImages` is `YES`. Setting `animationImage` and `animationSpeed` or 
 	+ (void)beginUpdatingSharedProgressViews;
 	+ (void)endUpdatingSharedProgressViews;
 
-Demo:
+Demo
 =====
 
 	JGProgressView *progressView = [[JGProgressView alloc] initWithFrame:CGRectMake(100, 100, 200, 11)];
