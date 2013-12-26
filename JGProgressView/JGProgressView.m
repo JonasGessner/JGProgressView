@@ -8,13 +8,40 @@
 #import "JGProgressView.h"
 #import <QuartzCore/QuartzCore.h>
 
-//Shared objects
-static NSMutableArray *_animationImages;
-static UIImage *_masterImage;
-static UIProgressViewStyle _currentStyle;
-static BOOL _right;
+static NSMutableSet *_sharedProgressViews;
 
-#define kSignleElementWidth 28.0f
+static UIImage *_sharedImage;
+static UIProgressViewStyle _sharedStyle = UIProgressViewStyleDefault;
+static NSTimeInterval _sharedAnimationSpeed = 0.5;
+static BOOL _sharedAnimateToRight = NO;
+static BOOL _updatingShared = NO;
+
+static NSMutableArray *_sharedAnimationImages;
+
+
+#if !__has_feature(objc_arc)
+#warning JGProgressView requires ARC.
+#endif
+
+
+#ifndef kCFCoreFoundationVersionNumber_iOS_7_0
+#define kCFCoreFoundationVersionNumber_iOS_7_0 847.2
+#endif
+
+#define iOS7 (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_7_0)
+
+#define kiOS7ProgressColor [UIColor colorWithRed:(21.0f/255.0f) green:(125.0f/255.0f) blue:(249.0f/255.0f) alpha:1.0f]
+
+
+@interface JGWeakReference : NSObject
+
+@property (nonatomic, weak) id object;
+
+@end
+
+@implementation JGWeakReference
+
+@end
 
 
 @interface UIImage (JGAddons)
@@ -64,39 +91,76 @@ static BOOL _right;
     return result;
 }
 
+NS_INLINE UIImage *renderAnimationImages(NSMutableArray *container, UIImage *singleImage, BOOL right, CGFloat width, BOOL complete) {
+    if (!width) {
+        return nil;
+    }
+    
+    CGFloat singleWidth = singleImage.size.width;
+    
+    UIImage *masterImage = (right ? container.lastObject : container.firstObject);
+    
+    if (complete || masterImage.size.width != width || !masterImage) {
+        CGFloat expectedWidth = width+singleWidth*2.0f;
+        
+        BOOL completeReloop = (!masterImage || complete);
+        
+        if (completeReloop) {
+            masterImage = [singleImage copy];
+            
+            while (masterImage.size.width < expectedWidth) {
+                masterImage = [masterImage attachImage:singleImage];
+            }
+        }
+        else {
+            while (masterImage.size.width < expectedWidth) {
+                masterImage = [masterImage attachImage:singleImage];
+            }
+            while (masterImage.size.width-singleWidth > expectedWidth+singleWidth) {
+                masterImage = [masterImage cropByX:singleWidth];
+            }
+        }
+        
+        [container removeAllObjects];
+        
+        CGSize size = CGSizeMake(width, masterImage.size.height);
+        
+        CGFloat pixels = singleWidth*[UIScreen mainScreen].scale;
+        
+        CGFloat anchorX = (right ? -fabsf(masterImage.size.width-width) : 0.0f);
+        
+        for (int i = 0; i <= pixels; i++) {
+            UIGraphicsBeginImageContextWithOptions(size, NO, 0.0f);
+            
+            [masterImage drawInRect:(CGRect){{anchorX+(right ? i : -i), 0.0f}, masterImage.size}];
+            
+            UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
+            
+            if (result) {
+                [container addObject:result];
+            }
+            
+            UIGraphicsEndImageContext();
+        }
+    }
+    
+    return masterImage;
+}
+
 @end
 
 @interface JGProgressView () {
-    UIImageView *theImageView;
-    UIView *host;
+    UIImageView *_imageView;
     
-    CGFloat cachedProgress;
+    CGFloat _cachedProgress;
     
-    NSMutableArray *images;
-    UIProgressViewStyle currentStyle;
-    UIImage *master;
+    NSMutableArray *_animationImages;
     
-    BOOL updating;
+    BOOL _updating;
     
-    BOOL absoluteAnimateRight;
+    BOOL _animateToRight;
 }
 
-- (void)reloopForInterfaceChange;
-
-- (void)setAnimationImages:(NSMutableArray *)imgs;
-- (NSMutableArray *)animationImages;
-
-- (UIImage *)masterImage;
-- (void)setMasterImage:(UIImage *)img;
-
-- (UIProgressViewStyle)currentStyle;
-- (void)setCurrentStyle:(UIProgressViewStyle)_style;
-
-
-- (BOOL)currentAnimateToRight;
-- (void)setCurrentAnimateToRight:(BOOL)right;
-
-- (void)layoutImageView;
 
 @end
 
@@ -104,129 +168,278 @@ static BOOL _right;
 
 @synthesize animationImage = _animationImage;
 
-- (void)setAnimateToRight:(BOOL)animateToRight {
-    _animateToRight = animateToRight;
-    [self reloopForInterfaceChange];
+NS_INLINE void updateSharedProgressViewList(BOOL complete) {
+    if (_updatingShared) {
+        return;
+    }
+    
+    if (!_sharedAnimationImages) {
+        _sharedAnimationImages = [NSMutableArray array];
+    }
+    
+    BOOL doneRendering = NO;
+    
+    for (JGWeakReference *ref in _sharedProgressViews.copy) {
+        if (!ref.object) {
+            [_sharedProgressViews removeObject:ref];
+        }
+        else {
+            JGProgressView *prog = ref.object;
+            
+            prog.progressViewStyle = _sharedStyle;
+            
+            if (!doneRendering) {
+                if (!_sharedImage) {
+                    if (iOS7) {
+                        CGSize size = (CGSize){27.5f, prog.frame.size.height};
+                        
+                        UIGraphicsBeginImageContextWithOptions(size, NO, 0.0f);
+                        
+                        [kiOS7ProgressColor setFill];
+                        
+                        [[UIBezierPath bezierPathWithRect:(CGRect){CGPointZero, {size.width/2.0f, size.height}}] fill];
+                        
+                        _sharedImage = UIGraphicsGetImageFromCurrentImageContext();
+                        
+                        UIGraphicsEndImageContext();
+                    }
+                    else {
+                        if (_sharedStyle == UIProgressViewStyleDefault) {
+                            _sharedImage = [UIImage imageNamed:@"Indeterminate.png"];
+                        }
+                        else {
+                            _sharedImage = [UIImage imageNamed:@"IndeterminateBar.png"];
+                        }
+                    }
+                }
+                
+                renderAnimationImages(_sharedAnimationImages, _sharedImage, _sharedAnimateToRight, prog.frame.size.width, complete);
+                
+                doneRendering = YES;
+            }
+            
+            [prog updateImageView];
+        }
+    }
+    
 }
 
+
++ (void)beginUpdatingSharedProgressViews {
+    _updatingShared = YES;
+}
+
++ (void)endUpdatingSharedProgressViews {
+    _updatingShared = NO;
+    updateSharedProgressViewList(NO);
+}
+
+
++ (void)setSharedProgressViewImage:(UIImage *)image {
+    _sharedImage = image;
+    _sharedAnimationImages = nil;
+    
+    updateSharedProgressViewList(YES);
+}
+
++ (void)setSharedProgressViewAnimationSpeed:(NSTimeInterval)speed {
+    if (_sharedAnimationSpeed == speed) {
+        return;
+    }
+    
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        _sharedAnimationSpeed = fabs(speed*[[UIScreen mainScreen] scale]);
+    }
+    else {
+        _sharedAnimationSpeed = fabs(speed);
+    }
+    
+    _sharedAnimateToRight = (speed < 0.0);
+    
+    updateSharedProgressViewList(NO);
+}
+
+
++ (void)setSharedProgressViewStyle:(UIProgressViewStyle)style {
+    if (_sharedStyle == style) {
+        return;
+    }
+    
+    _sharedStyle = style;
+    
+    _sharedImage = nil;
+    _sharedAnimationImages = nil;
+    
+    updateSharedProgressViewList(YES);
+}
+
+
+
+- (void)setUseSharedProperties:(BOOL)useSharedImages {
+    if (_useSharedProperties == useSharedImages) {
+        return;
+    }
+    
+    _useSharedProperties = useSharedImages;
+    
+    if (_useSharedProperties) {
+        if (!_sharedProgressViews) {
+            _sharedProgressViews = [NSMutableSet set];
+        }
+        
+        JGWeakReference *ref = [JGWeakReference new];
+        ref.object = self;
+        
+        [_sharedProgressViews addObject:ref];
+    }
+    else {
+        for (JGWeakReference *ref in _sharedProgressViews.copy) {
+            if (ref.object) {
+                if (ref.object == self) {
+                    [_sharedProgressViews removeObject:ref];
+                    break;
+                }
+            }
+            else {
+                [_sharedProgressViews removeObject:ref];
+            }
+        }
+        
+        _animationImage = nil;
+        _animationImages = nil;
+        
+        if (self.indeterminate) {
+            [self reloopForInterfaceChange:YES];
+        }
+    }
+}
+
+
+- (void)commonInit {
+    [self setClipsToBounds:YES];
+    self.animationSpeed = 0.5f;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (instancetype)initWithProgressViewStyle:(UIProgressViewStyle)style {
+    self = [super initWithProgressViewStyle:style];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
+
+
 - (void)beginUpdates {
-    updating = YES;
+    _updating = YES;
 }
 
 - (void)endUpdates {
-    updating = NO;
-    [self reloopForInterfaceChange];
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        [self setClipsToBounds:YES];
-        self.animationSpeed = 0.5f;
-    }
-    return self;
-}
-
-- (NSMutableArray *)animationImages {
-    return (self.useSharedImages ? _animationImages : images);
-}
-
-- (void)setAnimationImages:(NSMutableArray *)imgs {
-    if (self.useSharedImages) {
-        _animationImages = imgs;
-    }
-    else {
-        images = imgs;
+    _updating = NO;
+    if (!_useSharedProperties) {
+        [self reloopForInterfaceChange:NO];
     }
 }
 
-- (UIImage *)masterImage {
-    return (self.useSharedImages ? _masterImage : master);
-}
 
-- (void)setMasterImage:(UIImage *)img {
-    if (self.useSharedImages) {
-        _masterImage = img;
+- (UIImage *)makeAnimationImageForCurrentStyle {
+    UIImage *img = nil;
+    
+    if (iOS7) {
+        CGSize size = (CGSize){27.5f, self.frame.size.height};
+        
+        UIGraphicsBeginImageContextWithOptions(size, NO, 0.0f);
+        
+        [kiOS7ProgressColor setFill];
+        
+        [[UIBezierPath bezierPathWithRect:(CGRect){CGPointZero, {size.width/2.0f, size.height}}] fill];
+        
+        img = UIGraphicsGetImageFromCurrentImageContext();
+        
+        UIGraphicsEndImageContext();
     }
     else {
-        master = img;
-    }
-}
-
-- (UIProgressViewStyle)currentStyle {
-    return (self.useSharedImages ? _currentStyle : currentStyle);
-}
-
-- (void)setCurrentStyle:(UIProgressViewStyle)_style {
-    if (self.useSharedImages) {
-        _currentStyle = _style;
-    }
-    else {
-        currentStyle = _style;
-    }
-}
-
-- (BOOL)currentAnimateToRight {
-    return (self.useSharedImages ? _right : absoluteAnimateRight);
-}
-
-- (void)setCurrentAnimateToRight:(BOOL)right {
-    if (self.useSharedImages) {
-        _right = right;
-    }
-    else {
-        absoluteAnimateRight = right;
-    }
-}
-
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self setClipsToBounds:YES];
-        self.animationSpeed = 0.5f;
-    }
-    return self;
-}
-
-- (UIImage *)animationImage {
-    if (!_animationImage) {
         if (self.progressViewStyle == UIProgressViewStyleDefault) {
-            _animationImage = [UIImage imageNamed:@"Indeterminate.png"];
+            img = [UIImage imageNamed:@"Indeterminate.png"];
         }
         else {
-            _animationImage = [UIImage imageNamed:@"IndeterminateBar.png"];
+            img = [UIImage imageNamed:@"IndeterminateBar.png"];
         }
     }
-    return _animationImage;
+    
+    return img;
+}
+
+
+- (UIImage *)animationImage {
+    if (!_useSharedProperties) {
+        if (!_animationImage) {
+            _animationImage = [self makeAnimationImageForCurrentStyle];
+        }
+        
+        NSParameterAssert(_animationImage);
+        
+        return _animationImage;
+    }
+    
+    return nil;
 }
 
 - (void)setAnimationImage:(UIImage *)animationImage {
-    if (animationImage != _animationImage) {
-        [self willChangeValueForKey:@"animationImage"];
-        _animationImage = animationImage;
-        [self setMasterImage:nil];
-        [self setAnimationImages:nil];
-        if (self.indeterminate) {
-            [self reloopForInterfaceChange];
+    if (!_useSharedProperties) {
+        if (animationImage != _animationImage) {
+            [self willChangeValueForKey:@"animationImage"];
+            _animationImage = animationImage;
+            
+            _animationImages = nil;
+            
+            if (self.indeterminate) {
+                [self reloopForInterfaceChange:YES];
+            }
+            
+            [self didChangeValueForKey:@"animationImage"];
         }
-        [self didChangeValueForKey:@"animationImage"];
     }
 }
 
 - (void)setAnimationSpeed:(NSTimeInterval)animationSpeed {
-    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
-        _animationSpeed = animationSpeed*[[UIScreen mainScreen] scale];
-    }
-    else {
-        _animationSpeed = animationSpeed;
-    }
-    
-    if (animationSpeed >= 0.0f) {
-        _animationSpeed = animationSpeed;
-    }
-    
-    if (self.isIndeterminate) {
-        [theImageView setAnimationDuration:self.animationSpeed];
+    if (!_useSharedProperties) {
+        if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+            _animationSpeed = fabs(animationSpeed*[[UIScreen mainScreen] scale]);
+        }
+        else {
+            _animationSpeed = fabs(animationSpeed);
+        }
+        
+        _animateToRight = (animationSpeed < 0.0);
+        
+        if (self.isIndeterminate) {
+            [_imageView setAnimationDuration:self.animationSpeed];
+        }
     }
 }
 
@@ -235,189 +448,15 @@ static BOOL _right;
         return;
     }
     
-    _animationImage = nil;
-    
     [super setProgressViewStyle:progressViewStyle];
     
-    if (self.isIndeterminate) {
-        [self reloopForInterfaceChange];
-    }
-}
-
-- (float)progress {
-    if (self.isIndeterminate) {
-        return cachedProgress;
-    }
-    else {
-        return [super progress];
-    }
-}
-
-- (void)setProgress:(float)progress animated:(BOOL)animated {
-    if (self.isIndeterminate) {
-        cachedProgress = progress;
-    }
-    else {
-        [super setProgress:progress animated:animated];
-    }
-}
-
-- (void)setProgress:(float)progress {
-    if (self.isIndeterminate) {
-        cachedProgress = progress;
-    }
-    else {
-        [super setProgress:progress];
-    }
-}
-
-- (void)layoutImageView {
-    [theImageView sizeToFit];
-    CGFloat border = (9.0f-theImageView.frame.size.height);
-    
-    theImageView.center = CGPointMake(theImageView.center.x, CGRectGetMidY(self.bounds)-border/2.0f);
-    
-    theImageView.frame = CGRectMake(border, theImageView.frame.origin.y, theImageView.frame.size.width-border*2.0f, theImageView.frame.size.height);
-    
-    theImageView.layer.cornerRadius = theImageView.frame.size.height/2.0f;
-    
-    host.layer.cornerRadius = theImageView.frame.size.height/2.0f;
-    
-    [host setFrame:self.bounds];
-}
-
-- (void)setIndeterminate:(BOOL)indeterminate {
-    if (_indeterminate == indeterminate) {
-        if (indeterminate) {
-            [self reloopForInterfaceChange];
-        }
-        else {
-            [theImageView removeFromSuperview];
-            theImageView = nil;
-        }
-        return;
-    }
-    
-    if (indeterminate) {
-        cachedProgress = self.progress;
-        self.progress = 0.0f;
-    }
-    
-    _indeterminate = indeterminate;
-    
-    if (_indeterminate) {
-        [self reloopForInterfaceChange];
-    }
-    else {
-        self.progress = cachedProgress;
-        [theImageView stopAnimating];
-        [theImageView removeFromSuperview];
-    }
-}
-
-- (CGFloat)width {
-    return self.frame.size.width;
-}
-
-- (void)reloopForInterfaceChange {
-    if (updating) {
-        return;
-    }
-    UIImage *single = [self animationImage];
-    NSMutableArray *imgs = self.animationImages;
-    UIImage *masterImage = self.masterImage;
-    if (self.animateToRight != self.currentAnimateToRight || self.progressViewStyle != self.currentStyle || !masterImage || ((UIImage *)imgs.lastObject).size.width != self.width) {
-        CGFloat expectedWidth = self.width+kSignleElementWidth;
-        BOOL completeReloop = (self.progressViewStyle != self.currentStyle || !masterImage);
+    if (!_useSharedProperties) {
+        _animationImage = nil;
+        _animationImages = nil;
         
-        if (completeReloop) {
-            masterImage = [single copy];
-            while (masterImage.size.width-kSignleElementWidth < expectedWidth) {
-                masterImage = [masterImage attachImage:single];
-            }
+        if (self.isIndeterminate) {
+            [self reloopForInterfaceChange:YES];
         }
-        else {
-            if (masterImage.size.width-kSignleElementWidth < expectedWidth) {
-                while (masterImage.size.width-kSignleElementWidth < expectedWidth) {
-                    masterImage = [masterImage attachImage:single];
-                }
-            }
-            else {
-                while (masterImage.size.width-kSignleElementWidth > expectedWidth+kSignleElementWidth) {
-                    masterImage = [masterImage cropByX:kSignleElementWidth];
-                }
-            }
-        }
-        
-        [self setMasterImage:[masterImage copy]];
-    
-        if (!imgs) {
-            imgs = [[NSMutableArray alloc] init];
-        }
-        else {
-            [imgs removeAllObjects];
-        }
-        
-        CGSize size = CGSizeMake(self.width, masterImage.size.height);
-        
-        CGFloat pixels = single.size.width*single.scale;
-        
-        CGFloat anchorX = (self.animateToRight ? -fabsf(masterImage.size.width-size.width) : 0.0f);
-        
-        for (int i = 0; i <= pixels; i++) {
-            UIGraphicsBeginImageContextWithOptions(size, NO, single.scale);
-            CGContextRef context = UIGraphicsGetCurrentContext();
-            
-            CGContextTranslateCTM(context, 0.0f, masterImage.size.height);
-            CGContextScaleCTM(context, 1.0f, -1.0f);
-            
-            CGContextDrawImage(context, CGRectMake(anchorX+(self.animateToRight ? i : -i), 0.0f, masterImage.size.width, masterImage.size.height), masterImage.CGImage);
-            
-            UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
-            
-            UIGraphicsEndImageContext();
-            
-            [imgs addObject:result];
-        }
-        
-        [self setCurrentAnimateToRight:self.animateToRight];
-    }
-    
-    [self setAnimationImages:[imgs mutableCopy]];
-    
-    if (!theImageView) {
-        theImageView = [[UIImageView alloc] init];
-    }
-    if (!host) {
-        host = [[UIView alloc] initWithFrame:self.bounds];
-        host.backgroundColor = [UIColor clearColor];
-        host.layer.cornerRadius = theImageView.frame.size.height/2.0f;
-        host.clipsToBounds = YES;
-    }
-    
-    theImageView.layer.masksToBounds = YES;
-    
-    [self setCurrentStyle:self.progressViewStyle];
-    
-    if (theImageView.superview != host) {
-        [host addSubview:theImageView];
-    }
-    
-    if (host.superview != self) {
-        [self addSubview:host];
-    }
-    
-
-    theImageView.animationImages = imgs;
-    
-    if (theImageView.animationDuration != self.animationSpeed) {
-        theImageView.animationDuration = self.animationSpeed;
-    }
-    
-    [self layoutImageView];
-    
-    if (!theImageView.isAnimating) {
-        [theImageView startAnimating];
     }
 }
 
@@ -427,17 +466,147 @@ static BOOL _right;
 
 - (NSArray *)subviews {
     NSMutableArray *mutable = [[super subviews] mutableCopy];
-    [mutable removeObjectIdenticalTo:host];
-    return [[NSArray alloc] initWithArray:mutable];
+    [mutable removeObjectIdenticalTo:_imageView];
+    return [mutable copy];
 }
 
 - (void)setFrame:(CGRect)frame {
-    CGSize oldSize = CGSizeMake(self.frame.size.width, self.frame.size.height);
-    [super setFrame:frame];
-    if (!CGSizeEqualToSize(oldSize, frame.size)) {
-        if (self.isIndeterminate) {
-            [self reloopForInterfaceChange];
+    if (!_useSharedProperties) {
+        CGSize oldSize = self.frame.size;
+        
+        [super setFrame:frame];
+        
+        if (!CGSizeEqualToSize(oldSize, frame.size)) {
+            if (self.isIndeterminate) {
+                [self reloopForInterfaceChange:NO];
+            }
         }
+    }
+    else {
+        [super setFrame:frame];
+        if (self.isIndeterminate) {
+            [self layoutImageView];
+        }
+    }
+}
+
+- (void)layoutImageView {
+    [_imageView sizeToFit];
+    
+    UIEdgeInsets insets = (!iOS7 && self.progressViewStyle == UIProgressViewStyleBar ? UIEdgeInsetsMake(1.0f, 1.0f, 2.0f, 1.0f) : UIEdgeInsetsZero);
+    
+    CGRect frame = UIEdgeInsetsInsetRect(self.bounds, insets);
+    
+    _imageView.frame = frame;
+    
+    if (!iOS7) {
+        _imageView.layer.cornerRadius = frame.size.height/2.0f;
+    }
+}
+
+#pragma mark - Progress Handling
+
+- (float)progress {
+    if (self.isIndeterminate) {
+        return _cachedProgress;
+    }
+    else {
+        return [super progress];
+    }
+}
+
+- (void)setProgress:(float)progress animated:(BOOL)animated {
+    if (self.isIndeterminate) {
+        _cachedProgress = progress;
+    }
+    else {
+        [super setProgress:progress animated:animated];
+    }
+}
+
+- (void)setProgress:(float)progress {
+    if (self.isIndeterminate) {
+        _cachedProgress = progress;
+    }
+    else {
+        [super setProgress:progress];
+    }
+}
+
+
+#pragma mark - Indeterminate Handling
+
+
+- (void)setIndeterminate:(BOOL)indeterminate {
+    if (_indeterminate == indeterminate) {
+        return;
+    }
+    
+    if (indeterminate) {
+        _cachedProgress = self.progress;
+        
+        self.progress = 0.0f;
+    }
+    
+    _indeterminate = indeterminate;
+    
+    if (_indeterminate) {
+        if (!_useSharedProperties) {
+            [self reloopForInterfaceChange:NO];
+        }
+        else {
+            [self updateImageView];
+        }
+    }
+    else {
+        self.progress = _cachedProgress;
+        
+        [_imageView stopAnimating];
+        [_imageView removeFromSuperview];
+        _imageView = nil;
+    }
+}
+
+- (void)renderAnimationImages:(BOOL)complete {
+    if (!_animationImages) {
+        _animationImages = [NSMutableArray array];
+    }
+    
+    renderAnimationImages(_animationImages, self.animationImage, _animateToRight, self.frame.size.width, complete);
+}
+
+- (void)reloopForInterfaceChange:(BOOL)complete {
+    if (_updating) {
+        return;
+    }
+    
+    [self renderAnimationImages:YES];
+    
+    [self updateImageView];
+}
+
+- (void)updateImageView {
+    if (!_imageView) {
+        _imageView = [[UIImageView alloc] init];
+        _imageView.layer.masksToBounds = YES;
+        _imageView.clipsToBounds = YES;
+        
+        [self addSubview:_imageView];
+    }
+    
+    
+    _imageView.animationImages = (_useSharedProperties ? _sharedAnimationImages : _animationImages);
+    
+    NSTimeInterval speed = (_useSharedProperties ? _sharedAnimationSpeed : self.animationSpeed);
+    
+    if (_imageView.animationDuration != speed) {
+        _imageView.animationDuration = speed;
+    }
+    
+    [self layoutImageView];
+    
+    if (!_imageView.isAnimating) {
+        [_imageView startAnimating];
     }
 }
 

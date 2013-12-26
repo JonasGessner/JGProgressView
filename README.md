@@ -11,7 +11,7 @@ Setup
 
 2. Add the **QuartzCore** framework to your project
 
-3. Add `#import "JGProgressView.h"` to the files where you are using JGProgressView
+3. `#import "JGProgressView.h"`
 
 Basic Usage
 ===========
@@ -21,43 +21,54 @@ JGProgressView is used like a normal UIProgressView with the addition of a few p
 
 **BOOL indeterminate**
 
-- Property for the indeterminate setting, default is NO, set to YES to start the indeterminate animation
+Property for the indeterminate setting, default is NO, set to YES to start the indeterminate animation
+
+
+
+**UIImage *animationImage**
+
+Use this property to set a custom image to use for the indeterminate animation. Set this to `nil` to use the standard image for the current UIProgressViewStyle.
 
 
 **NSTimeInterval animationSpeed**
 
-- Adjust the speed of the animation. The higher the value is, the slower the animation becomes. Default value is 0.5, negative values will be ignored
+Adjust the speed of the animation. The higher the value is, the slower the animation becomes. The default value is 0.5, negative values will invert the animation direction.
 
 
-**BOOL animateToRight**
+**beginUpdates**
 
-- Default value is NO, when set to YES the animation switches over to animating to the right instead of left
+**endUpdates**
 
-
-**BOOL useSharedImages**
-
-- Set this property to YES when using more than 1 progress views with identical animation related-properties (bounds, progressViewStyle, animateToRight) for improved performance (ex. in several UITableViewCells)
-- DO NOT set this property to YES on more than 1 progress views if their animation related-properties (bounds, progressViewStyle, animateToRight) are different for each view.
+Use begin- and endUpdates to increase performance when changing multiple properties of JGProgressView.
 
 
-###Additional Functionality
+<br>
+<br>
 
-`beginUpdates`
+**BOOL useSharedProperties**
 
-`endUpdates`
+Defaults to NO. Set to YES to use shared image, animation speed and progress view style. This may help increasing performance when using many progress views with the same properties (ex. in a UITableViewCell).
 
-when changing multiple properties that affect the animation related-properties (frame, progressViewStyle, animateToRight) in one code block, use beginUpdates before applying these changes and endUpdates after applying the changes to increase performance
+<br>
+If `useSharedImages` is `YES`. Setting `animationImage` and `animationSpeed` or calling `beginUpdate`and `endUpdates`has no effects. Instead use the following methods to change the visuals of all JGProgressViews that have `useSharedProperties` set to `YES`.
 
 
+	+ (void)setSharedProgressViewAnimationSpeed:(NSTimeInterval)speed;
+	+ (void)setSharedProgressViewImage:(UIImage *)img;
+	+ (void)setSharedProgressViewStyle:(UIProgressViewStyle)style;
 
+	+ (void)beginUpdatingSharedProgressViews;
+	+ (void)endUpdatingSharedProgressViews;
 
-###Short demonstration:
+Demo:
+=====
 
 	JGProgressView *progressView = [[JGProgressView alloc] initWithFrame:CGRectMake(100, 100, 200, 11)];
+	
+	progressView.animationSpeed = 1.5;
+	
 	[self.view addSubview:progressView];
-	progressView.useSharedImages = NO;
-	progressView.animateToRight = YES;
-	progressView.animationSpeed = 1.5f;
+
 	progressView.indeterminate = YES;
 
 
