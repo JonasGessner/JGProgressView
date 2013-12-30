@@ -1,4 +1,4 @@
-<h1>JGProgressView</h1><h6>© 2012-2014 Jonas Gessner</h6>
+<h1>JGProgressView</h1><h6>© 2012-<script>document.write(new Date().getFullYear())</script> Jonas Gessner</h6>
 
 ----------------
 <br>
@@ -85,6 +85,6 @@ Created by Jonas Gessner.
 License
 =====
 
-Copyright © 2012-2014 Jonas Gessner.
+Copyright © 2012-<script>document.write(new Date().getFullYear())</script> Jonas Gessner.
 
 JGProgressView is available under the <a href="http://opensource.org/licenses/Python-2.0">Python 2.0 license</a>.
