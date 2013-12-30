@@ -1,17 +1,19 @@
-JGProgressView
--------------------
-By Jonas Gessner (@JonasGessner). If you use JGProgressView in your app then please let me know :)
+<h1>JGProgressView</h1><h6>© 2012-2014 Jonas Gessner</h6>
+
+----------------
+<br>
+
 <p align="center">
 <img src=http://j-gessner.de/general/images/JGProgressView.png>
 </p>
 
 Setup
 =====
-1. Add the `JGProgressView` folder to your Xcode Project
+1. Add the `JGProgressView` folder to your Xcode Project.
 
-2. Add the **QuartzCore** framework to your project
+2. Add the **QuartzCore** framework to your project.
 
-3. `#import "JGProgressView.h"`
+3. `#import "JGProgressView.h"`.
 
 Basic Usage
 ===========
@@ -21,7 +23,7 @@ JGProgressView is used like a normal UIProgressView with the addition of a few p
 
 **BOOL indeterminate**
 
-Property for the indeterminate setting, default is NO, set to YES to start the indeterminate animation
+Property for the indeterminate setting, default is NO, set to YES to start the indeterminate animation.
 
 
 
@@ -75,9 +77,14 @@ Demo
 __*Important note if your project doesn't use ARC*: you must add the `-fobjc-arc` compiler flag to `JGProgressView.m` in Target Settings > Build Phases > Compile Sources.__
 
 
+Credits
+======
+Created by Jonas Gessner.
+
+
 License
 =====
 
-Copyright © 2012-2013 Jonas Gessner
+Copyright © 2012-2014 Jonas Gessner.
 
-JGProgressView is available under the <a href="http://opensource.org/licenses/Python-2.0">Python 2.0 license</a>
+JGProgressView is available under the <a href="http://opensource.org/licenses/Python-2.0">Python 2.0 license</a>.
