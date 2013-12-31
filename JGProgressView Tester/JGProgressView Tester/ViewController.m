@@ -67,8 +67,9 @@
     for (i = 0; i <= count; i++) {
         JGProgressView *p = [[JGProgressView alloc] init];
         [p setIndeterminate:YES];
+        p.progress = 0.5f;
         
-        p.frame = CGRectMake(50.0f, 10.0f+50.0f*i, 220.0f, p.frame.size.height);
+        p.frame = CGRectMake(50.0f, 40.0f+50.0f*i, 220.0f, p.frame.size.height);
         p.center = CGPointMake(CGRectGetMidX(self.view.bounds), p.center.y);
         
         [self.view addSubview:p];
@@ -77,7 +78,7 @@
         p.useSharedProperties = YES;
     }
     
-    [JGProgressView setSharedProgressViewStyle:UIProgressViewStyleBar];
+    [JGProgressView setSharedProgressViewStyle:UIProgressViewStyleDefault];
     [JGProgressView setSharedProgressViewAnimationSpeed:-2.0];
     
     [JGProgressView endUpdatingSharedProgressViews];

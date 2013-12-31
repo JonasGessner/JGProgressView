@@ -30,9 +30,6 @@ static NSMutableArray *_sharedAnimationImages;
 
 #define iOS7 (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_7_0)
 
-#define kiOS7ProgressColor [UIColor colorWithRed:(21.0f/255.0f) green:(125.0f/255.0f) blue:(249.0f/255.0f) alpha:1.0f]
-
-
 @interface JGWeakReference : NSObject
 
 @property (nonatomic, weak) id object;
@@ -195,7 +192,7 @@ NS_INLINE void updateSharedProgressViewList(BOOL complete) {
                         
                         UIGraphicsBeginImageContextWithOptions(size, NO, 0.0f);
                         
-                        [kiOS7ProgressColor setFill];
+                        [prog.tintColor setFill];
                         
                         [[UIBezierPath bezierPathWithRect:(CGRect){CGPointZero, {size.width/2.0f, size.height}}] fill];
                         
@@ -374,7 +371,7 @@ NS_INLINE void updateSharedProgressViewList(BOOL complete) {
         
         UIGraphicsBeginImageContextWithOptions(size, NO, 0.0f);
         
-        [kiOS7ProgressColor setFill];
+        [self.tintColor setFill];
         
         [[UIBezierPath bezierPathWithRect:(CGRect){CGPointZero, {size.width/2.0f, size.height}}] fill];
         
@@ -449,6 +446,23 @@ NS_INLINE void updateSharedProgressViewList(BOOL complete) {
     }
     
     [super setProgressViewStyle:progressViewStyle];
+    
+    if (!_useSharedProperties) {
+        _animationImage = nil;
+        _animationImages = nil;
+        
+        if (self.isIndeterminate) {
+            [self reloopForInterfaceChange:YES];
+        }
+    }
+}
+
+- (void)setTintColor:(UIColor *)tintColor {
+    if ([tintColor isEqual:self.tintColor]) {
+        return;
+    }
+    
+    [super setTintColor:tintColor];
     
     if (!_useSharedProperties) {
         _animationImage = nil;
@@ -586,27 +600,33 @@ NS_INLINE void updateSharedProgressViewList(BOOL complete) {
 }
 
 - (void)updateImageView {
-    if (!_imageView) {
-        _imageView = [[UIImageView alloc] init];
-        _imageView.layer.masksToBounds = YES;
-        _imageView.clipsToBounds = YES;
+    if (self.indeterminate) {
+        if (!_imageView) {
+            _imageView = [[UIImageView alloc] init];
+            _imageView.layer.masksToBounds = YES;
+            _imageView.clipsToBounds = YES;
+            
+            [self addSubview:_imageView];
+        }
         
-        [self addSubview:_imageView];
+        
+        _imageView.animationImages = (_useSharedProperties ? _sharedAnimationImages : _animationImages);
+        
+        NSTimeInterval speed = (_useSharedProperties ? _sharedAnimationSpeed : self.animationSpeed);
+        
+        if (_imageView.animationDuration != speed) {
+            _imageView.animationDuration = speed;
+        }
+        
+        [self layoutImageView];
+        
+        if (!_imageView.isAnimating) {
+            [_imageView startAnimating];
+        }
     }
-    
-    
-    _imageView.animationImages = (_useSharedProperties ? _sharedAnimationImages : _animationImages);
-    
-    NSTimeInterval speed = (_useSharedProperties ? _sharedAnimationSpeed : self.animationSpeed);
-    
-    if (_imageView.animationDuration != speed) {
-        _imageView.animationDuration = speed;
-    }
-    
-    [self layoutImageView];
-    
-    if (!_imageView.isAnimating) {
-        [_imageView startAnimating];
+    else {
+        [_imageView removeFromSuperview];
+        _imageView = nil;
     }
 }
 
