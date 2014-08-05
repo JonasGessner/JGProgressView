@@ -19,9 +19,7 @@ OR:
 <p>
 <b>Add source Files:</b><br>
 1. Add the `JGProgressView` folder to your Xcode Project.
-
 2. Add the **QuartzCore** framework to your project.
-
 3. `#import "JGProgressView.h"`.
 
 Basic Usage
