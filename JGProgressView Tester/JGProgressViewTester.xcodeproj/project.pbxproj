@@ -157,7 +157,7 @@
 		DDEDF83B15B6F4F8004F4EB5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Jonas Gessner";
 			};
 			buildConfigurationList = DDEDF83E15B6F4F8004F4EB5 /* Build configuration list for PBXProject "JGProgressViewTester" */;
@@ -294,7 +294,6 @@
 		DDEDF86615B6F4F8004F4EB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -310,7 +309,6 @@
 		DDEDF86715B6F4F8004F4EB5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JGProgressView Tester/JGProgressViewTester-Prefix.pch";

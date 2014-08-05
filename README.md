@@ -1,4 +1,4 @@
-<h1>JGProgressView</h1><h6>© 2012-2013 Jonas Gessner</h6>
+<h1>JGProgressView</h1><h6>© 2012-2014 Jonas Gessner</h6>
 
 ----------------
 <br>
@@ -9,6 +9,15 @@
 
 Setup
 =====
+<b>CocoaPods:</b><br>
+Add this to your `Podfile`:
+```
+pod 'JGProgressView', '1.2.1'
+```
+<p>
+OR:
+<p>
+<b>Add source Files:</b><br>
 1. Add the `JGProgressView` folder to your Xcode Project.
 
 2. Add the **QuartzCore** framework to your project.
@@ -64,25 +73,26 @@ If `useSharedImages` is `YES`. Setting `animationImage` and `animationSpeed` or 
 
 Demo
 =====
-
-	JGProgressView *progressView = [[JGProgressView alloc] initWithFrame:CGRectMake(100, 100, 200, 11)];
+```objc
+	JGProgressView *progressView = [[JGProgressView alloc] init];
 	
+	progressView.frame = CGRectMake(100.0f, 100.0f, 200.0f, progressView.frame.size.height);
 	progressView.animationSpeed = 1.5;
 	
 	[self.view addSubview:progressView];
 
 	progressView.indeterminate = YES;
-
+```
 
 __*Important note if your project doesn't use ARC*: you must add the `-fobjc-arc` compiler flag to `JGProgressView.m` in Target Settings > Build Phases > Compile Sources.__
 
 
 Credits
 ======
-Created by Jonas Gessner.
+Created by Jonas Gessner. ©2012-2014
 
 
 License
 =====
 
-JGProgressView is available under the <a href="http://opensource.org/licenses/Python-2.0">Python 2.0 license</a>.
+JGProgressView is available under the MIT License.
