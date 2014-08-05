@@ -18,9 +18,9 @@ pod 'JGProgressView', '1.2.1'
 OR:
 <p>
 <b>Add source Files:</b><br>
-1. Add the `JGProgressView` folder to your Xcode Project.
-2. Add the **QuartzCore** framework to your project.
-3. `#import "JGProgressView.h"`.
+1. Add the `JGProgressView` folder to your Xcode Project.<br>
+2. Add the **QuartzCore** framework to your project.<br>
+3. `#import "JGProgressView.h"`.<br>
 
 Basic Usage
 ===========
